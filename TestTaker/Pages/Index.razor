@@ -1,0 +1,56 @@
+﻿@page "/"
+
+<PageTitle>محاسبه درصد آزمون</PageTitle>
+<div class="mh-100 container my-5" dir="rtl">
+    <h1>محاسبه درصد آزمون</h1>
+    <form @onsubmit="submit">
+        <div class="form-group my-3">
+            <input @bind-value="QuestionsCount" type="number" class="form-control" aria-describedby="emailHelp">
+            <small class="form-text text-muted">تعداد کل سوالات</small>
+        </div>
+        <div class="form-group my-3">
+            <input @bind-value="CorrectsCount" type="number" class="form-control" aria-describedby="emailHelp">
+            <small class="form-text  text-success">تعداد سوالات درست</small>
+        </div>
+        <div class="form-group my-3">
+            <input @bind-value="WrongsCount" type="number" class="form-control" aria-describedby="emailHelp">
+            <small class="form-text text-danger">تعداد سوالات غلط</small>
+        </div>
+        <button type="submit" class="btn w-100 btn-outline-primary fw-bold">محاسبه</button>
+    </form>
+    <div class="d-flex flex-row justify-content-center my-4">
+        <strong class="ms-3">درصد شما با نمره منفی : </strong>
+        <strong class="text-info">@RawPercentage</strong>
+    </div>
+    <div class="d-flex flex-row justify-content-center my-4">
+        <strong class="ms-3">درصد شما بدون نمره منفی : </strong>
+        <strong class="text-success">@PercentageWithoutNegative</strong>
+    </div>
+    <div class="d-flex flex-row justify-content-center my-4">
+        <strong class="ms-3 text-danger">@ErrorMessage</strong>
+
+    </div>
+
+</div>
+
+@code {
+    public string? RawPercentage { get; set; }
+    public string? PercentageWithoutNegative { get; set; }
+    public string? ErrorMessage { get; set; }
+    public double QuestionsCount { get; set; }
+    public double CorrectsCount { get; set; }
+    public double WrongsCount { get; set; }
+    private void submit()
+    {
+        if (((CorrectsCount + WrongsCount) > QuestionsCount)||QuestionsCount<=0)
+        {
+            RawPercentage = "";
+            PercentageWithoutNegative = "";
+            ErrorMessage = "لطفا مقادیر را به درستی وارد کنید";
+            return;
+        }
+        ErrorMessage = "";
+        RawPercentage = ((((CorrectsCount * 3) - WrongsCount) / (QuestionsCount * 3))*100).ToString()+"%";
+        PercentageWithoutNegative = ((((CorrectsCount * 3)) / (QuestionsCount * 3))*100).ToString()+"%";
+    }
+}
